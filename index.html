@@ -3,25 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uno EX — AI Company</title>
+<title>Top Company — AI Company</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap');
 
 :root {
-  --bg: #06080f;
-  --surface: #0b0e18;
-  --surface2: #0f1220;
-  --border: #1a1f30;
-  --border2: #232840;
-  --text: #dde3f0;
-  --muted: #4a5270;
-  --muted2: #6b7490;
-  --geo: #e8a045; --geo-bg: rgba(232,160,69,0.08);
-  --seismic: #4fc3f7; --seismic-bg: rgba(79,195,247,0.08);
-  --gov: #81c784; --gov-bg: rgba(129,199,132,0.08);
-  --finance: #ce93d8; --finance-bg: rgba(206,147,216,0.08);
-  --ceo: #ff6b6b; --success: #4caf50; --warn: #ff9800;
-  --memory: #f472b6;
+  /* Warm minimal palette */
+  --bg: #13100e;
+  --surface: #1a1612;
+  --surface2: #211d18;
+  --border: #2e2820;
+  --border2: #3a3228;
+  --text: #f0e8de;
+  --muted: #6b5e52;
+  --muted2: #9a8a7c;
+
+  /* Team accent — warm tones */
+  --geo:     #d4915a; --geo-bg:     rgba(212,145,90,0.1);
+  --seismic: #c4a882; --seismic-bg: rgba(196,168,130,0.1);
+  --gov:     #a8b898; --gov-bg:     rgba(168,184,152,0.1);
+  --finance: #c8a86e; --finance-bg: rgba(200,168,110,0.1);
+
+  /* Core */
+  --ceo:    #c87941;
+  --success:#8aad78;
+  --warn:   #c4975a;
+  --memory: #c49a6e;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -29,7 +36,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -58,7 +65,7 @@ body {
   padding: 3px 10px; border-radius: 20px; font-size: 10px;
   font-weight: 600; letter-spacing: 0.05em; border: 1px solid;
   cursor: pointer; transition: all 0.18s;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
 }
 .pill-all { color: #fff; border-color: #333; background: #1a1f30; }
 .pill-all.active { background: #fff; color: #000; border-color: #fff; }
@@ -76,7 +83,7 @@ body {
   padding: 4px 10px; border-radius: 6px; font-size: 10px;
   border: 1px solid var(--memory); color: var(--memory);
   background: rgba(244,114,182,0.08); cursor: pointer;
-  font-family: 'JetBrains Mono', monospace; transition: all 0.18s;
+  font-family: 'DM Mono', monospace; transition: all 0.18s;
   display: flex; align-items: center; gap: 5px;
 }
 .mem-btn:hover { background: rgba(244,114,182,0.18); }
@@ -84,7 +91,7 @@ body {
 .topbar-right {
   margin-left: auto;
   display: flex; align-items: center; gap: 14px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
   font-size: 11px; color: var(--muted2);
 }
 .live-dot {
@@ -117,7 +124,7 @@ body {
 .section-label {
   font-size: 9px; letter-spacing: 0.2em; color: var(--muted);
   text-transform: uppercase; padding: 0 14px 8px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
   display: flex; align-items: center; gap: 6px;
 }
 .section-color { width: 7px; height: 7px; border-radius: 2px; }
@@ -150,11 +157,11 @@ body {
   border: 2px solid var(--surface);
 }
 .ceo-info .name { font-size: 13px; font-weight: 700; color: var(--ceo); }
-.ceo-info .role { font-size: 10px; color: var(--muted2); font-family: 'JetBrains Mono', monospace; }
+.ceo-info .role { font-size: 10px; color: var(--muted2); font-family: 'DM Mono', monospace; }
 .ceo-badge {
   margin-left: auto; font-size: 8px; padding: 2px 6px; border-radius: 4px;
   background: rgba(255,107,107,0.15); color: var(--ceo);
-  border: 1px solid rgba(255,107,107,0.3); font-family: 'JetBrains Mono', monospace;
+  border: 1px solid rgba(255,107,107,0.3); font-family: 'DM Mono', monospace;
 }
 
 .member-card {
@@ -179,7 +186,7 @@ body {
 
 .m-info { flex: 1; min-width: 0; }
 .m-name { font-size: 12px; font-weight: 600; }
-.m-role { font-size: 9px; color: var(--muted2); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-role { font-size: 9px; color: var(--muted2); font-family: 'DM Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Memory badge on member */
 .m-mem { font-size: 8px; color: var(--memory); }
@@ -210,12 +217,12 @@ body {
 .tc:hover { transform: translateY(-2px); }
 .tc .tc-icon { font-size: 20px; margin-bottom: 5px; }
 .tc .tc-name { font-size: 12px; font-weight: 700; }
-.tc .tc-sub { font-size: 9px; opacity: 0.6; font-family: 'JetBrains Mono', monospace; }
+.tc .tc-sub { font-size: 9px; opacity: 0.6; font-family: 'DM Mono', monospace; }
 
 /* Memory ribbon on welcome card */
 .mem-ribbon {
   font-size: 9px; margin-top: 6px; display: flex; align-items: center; gap: 4px;
-  color: var(--memory); font-family: 'JetBrains Mono', monospace;
+  color: var(--memory); font-family: 'DM Mono', monospace;
 }
 
 .msg { display: flex; gap: 9px; animation: fadeUp 0.25s ease; }
@@ -235,14 +242,14 @@ body {
 
 .msg-meta {
   font-size: 10px; color: var(--muted2); margin-bottom: 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
   display: flex; align-items: center; gap: 5px;
 }
 .msg.user-msg .msg-meta { flex-direction: row-reverse; }
 
 .team-tag {
   font-size: 8px; padding: 1px 5px; border-radius: 3px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
 }
 
 /* Memory tag in message */
@@ -250,7 +257,7 @@ body {
   font-size: 8px; padding: 1px 5px; border-radius: 3px;
   background: rgba(244,114,182,0.15); color: var(--memory);
   border: 1px solid rgba(244,114,182,0.3);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
 }
 
 .msg-bubble {
@@ -270,7 +277,7 @@ body {
 .mem-context {
   margin-bottom: 10px; padding: 8px 10px; border-radius: 7px;
   background: rgba(244,114,182,0.07); border: 1px solid rgba(244,114,182,0.2);
-  font-size: 11px; color: var(--memory); font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--memory); font-family: 'DM Mono', monospace;
   line-height: 1.6;
 }
 .mem-context-title { font-size: 9px; letter-spacing: 0.1em; margin-bottom: 5px; opacity: 0.7; }
@@ -300,7 +307,7 @@ body {
 .qcmd {
   padding: 3px 9px; border-radius: 5px; font-size: 10px;
   border: 1px solid var(--border2); color: var(--muted2); cursor: pointer;
-  background: none; font-family: 'JetBrains Mono', monospace;
+  background: none; font-family: 'DM Mono', monospace;
   transition: all 0.15s; white-space: nowrap;
 }
 .qcmd:hover { border-color: var(--muted); color: var(--text); }
@@ -316,7 +323,7 @@ body {
 
 textarea#inp {
   flex: 1; background: none; border: none; outline: none;
-  color: var(--text); font-family: 'Space Grotesk', sans-serif;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
   font-size: 13px; resize: none; max-height: 100px; line-height: 1.5;
 }
 textarea#inp::placeholder { color: var(--muted); }
@@ -341,7 +348,7 @@ textarea#inp::placeholder { color: var(--muted); }
 }
 .rp-tab {
   flex: 1; padding: 11px 8px; text-align: center; font-size: 10px;
-  font-family: 'JetBrains Mono', monospace; color: var(--muted2);
+  font-family: 'DM Mono', monospace; color: var(--muted2);
   cursor: pointer; border-bottom: 2px solid transparent;
   transition: all 0.18s; letter-spacing: 0.05em;
 }
@@ -365,20 +372,20 @@ textarea#inp::placeholder { color: var(--muted); }
 .task-agent-name { font-weight: 700; font-size: 11px; }
 .task-st {
   margin-left: auto; font-size: 9px; padding: 1px 5px;
-  border-radius: 3px; font-family: 'JetBrains Mono', monospace;
+  border-radius: 3px; font-family: 'DM Mono', monospace;
 }
 .task-st.running { background: rgba(255,152,0,0.2); color: var(--warn); }
 .task-st.done    { background: rgba(76,175,80,0.2);  color: var(--success); }
 .task-st.pending { background: rgba(74,82,112,0.3);  color: var(--muted2); }
 
-.task-desc { color: var(--muted2); line-height: 1.5; font-family: 'JetBrains Mono', monospace; }
+.task-desc { color: var(--muted2); line-height: 1.5; font-family: 'DM Mono', monospace; }
 .pbar { height: 2px; background: var(--border); border-radius: 1px; margin-top: 6px; overflow: hidden; }
 .pbar-fill { height: 100%; border-radius: 1px; background: var(--warn); animation: slide 1.8s infinite linear; width: 40%; }
 @keyframes slide { from { margin-left:-40%; } to { margin-left:100%; } }
 
 .empty-panel {
   padding: 28px 14px; text-align: center;
-  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+  color: var(--muted); font-family: 'DM Mono', monospace;
   font-size: 11px; line-height: 2.2;
 }
 
@@ -397,7 +404,7 @@ textarea#inp::placeholder { color: var(--muted); }
   border-left: 2px solid var(--memory);
   background: rgba(244,114,182,0.05);
   margin-bottom: 5px; font-size: 11px;
-  font-family: 'JetBrains Mono', monospace; line-height: 1.55;
+  font-family: 'DM Mono', monospace; line-height: 1.55;
   animation: fadeUp 0.25s ease;
 }
 .mem-entry-header {
@@ -417,7 +424,7 @@ textarea#inp::placeholder { color: var(--muted); }
 .mem-count-badge {
   font-size: 9px; padding: 1px 6px; border-radius: 10px;
   background: rgba(244,114,182,0.2); color: var(--memory);
-  font-family: 'JetBrains Mono', monospace; margin-left: auto;
+  font-family: 'DM Mono', monospace; margin-left: auto;
 }
 
 /* Summary section */
@@ -426,21 +433,21 @@ textarea#inp::placeholder { color: var(--muted); }
 }
 .summary-title {
   font-size: 9px; letter-spacing: 0.15em; color: var(--muted);
-  text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;
+  text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 8px;
 }
 .summary-row {
   display: flex; align-items: center; gap: 7px; padding: 4px 0;
   font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.03);
 }
 .summary-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
-.summary-label { color: var(--muted2); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
-.summary-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.summary-label { color: var(--muted2); font-family: 'DM Mono', monospace; font-size: 10px; }
+.summary-count { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 11px; }
 
 /* Add member */
 .add-member-btn {
   display: flex; align-items: center; gap: 7px;
   padding: 8px 14px; color: var(--muted); font-size: 11px;
-  font-family: 'JetBrains Mono', monospace; cursor: pointer;
+  font-family: 'DM Mono', monospace; cursor: pointer;
   background: none; border-top: 1px solid var(--border);
   border-left: none; border-right: none; border-bottom: none;
   width: 100%; text-align: left; transition: all 0.15s; margin-top: auto;
@@ -467,13 +474,13 @@ textarea#inp::placeholder { color: var(--muted); }
 .form-row { margin-bottom: 11px; }
 .form-lbl {
   display: block; font-size: 10px; color: var(--muted2);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
   letter-spacing: 0.1em; margin-bottom: 4px; text-transform: uppercase;
 }
 .form-inp, .form-sel {
   width: 100%; background: var(--bg);
   border: 1px solid var(--border2); border-radius: 7px; padding: 8px 11px;
-  color: var(--text); font-family: 'Space Grotesk', sans-serif;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
   font-size: 13px; outline: none; transition: border-color 0.2s; appearance: none;
 }
 .form-inp:focus, .form-sel:focus { border-color: rgba(255,107,107,0.5); }
@@ -491,14 +498,14 @@ textarea#inp::placeholder { color: var(--muted); }
 .modal-btns { display: flex; gap: 7px; margin-top: 16px; }
 .btn-ok {
   flex: 1; padding: 9px; background: var(--ceo); border: none;
-  border-radius: 8px; color: #fff; font-family: 'Space Grotesk', sans-serif;
+  border-radius: 8px; color: #fff; font-family: 'DM Sans', sans-serif;
   font-weight: 700; font-size: 13px; cursor: pointer; transition: background 0.18s;
 }
 .btn-ok:hover { background: #ff8585; }
 .btn-cancel {
   padding: 9px 14px; background: transparent;
   border: 1px solid var(--border2); border-radius: 8px; color: var(--muted2);
-  font-family: 'Space Grotesk', sans-serif; font-size: 13px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
   transition: all 0.18s;
 }
 .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
@@ -512,7 +519,7 @@ textarea#inp::placeholder { color: var(--muted); }
 }
 .mem-modal-entry textarea {
   flex: 1; background: none; border: none; outline: none;
-  color: var(--text); font-family: 'JetBrains Mono', monospace;
+  color: var(--text); font-family: 'DM Mono', monospace;
   font-size: 12px; resize: none; line-height: 1.5;
 }
 
@@ -601,7 +608,7 @@ textarea#inp::placeholder { color: var(--muted); }
   cursor: pointer;
   background: transparent;
   transition: all .15s;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DM Mono', monospace;
 }
 
 /* ── MOBILE NAV ── */
@@ -622,7 +629,7 @@ textarea#inp::placeholder { color: var(--muted); }
   gap: 2px;
   padding: 6px 0;
   transition: color .15s;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
 }
 .mobile-nav button.active { color: var(--ceo); }
 .mobile-nav button span { font-size: 18px; }
@@ -682,13 +689,223 @@ textarea#inp::placeholder { color: var(--muted); }
   padding: 12px;
 }
 
+
+/* ══ WARM MINIMAL OVERRIDES ══ */
+
+/* Softer topbar */
+.topbar {
+  height: 52px !important;
+  border-bottom: 1px solid var(--border) !important;
+  background: var(--bg) !important;
+}
+
+/* Brand */
+.brand {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: .06em !important;
+  color: var(--text) !important;
+}
+
+/* Pills — softer */
+.pill {
+  border-radius: 6px !important;
+  font-size: 9px !important;
+  padding: 3px 8px !important;
+  letter-spacing: .03em !important;
+}
+
+/* Buttons warm */
+.mem-btn {
+  border-radius: 6px !important;
+  font-size: 9px !important;
+  letter-spacing: .03em !important;
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--bg) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+/* CEO card */
+.ceo-row {
+  background: rgba(200,121,65,.06) !important;
+  border-bottom: 1px solid rgba(200,121,65,.15) !important;
+}
+
+/* Messages */
+.msg-bubble {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  border-radius: 4px 12px 12px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+/* User bubble */
+.msg.user-msg .msg-bubble {
+  background: rgba(200,121,65,.08) !important;
+  border-color: rgba(200,121,65,.2) !important;
+  border-radius: 12px 4px 12px 12px !important;
+}
+
+/* Input */
+.input-box {
+  background: var(--surface) !important;
+  border-color: var(--border2) !important;
+  border-radius: 8px !important;
+}
+
+.input-box:focus-within {
+  border-color: rgba(200,121,65,.4) !important;
+}
+
+/* Send button */
+.send-btn {
+  background: var(--ceo) !important;
+  border-radius: 8px !important;
+}
+.send-btn:hover { background: #d4895a !important; }
+
+/* Right panel */
+.right-panel {
+  background: var(--bg) !important;
+  border-left: 1px solid var(--border) !important;
+}
+
+/* Tabs */
+.rp-tab {
+  font-size: 9px !important;
+  letter-spacing: .05em !important;
+}
+.rp-tab.active { border-bottom-color: var(--ceo) !important; }
+
+/* Task items */
+.task-item {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  border-radius: 6px !important;
+}
+.task-item.running {
+  border-color: rgba(196,151,90,.35) !important;
+  background: rgba(196,151,90,.04) !important;
+}
+.task-item.done {
+  border-color: rgba(138,173,120,.3) !important;
+  background: rgba(138,173,120,.04) !important;
+}
+
+/* Memory entries */
+.mentry {
+  border-left-color: var(--memory) !important;
+  background: rgba(196,154,110,.05) !important;
+}
+
+/* Welcome cards */
+.tc {
+  border-radius: 8px !important;
+  transition: transform .2s, box-shadow .2s !important;
+}
+.tc:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3) !important;
+}
+
+/* Modal */
+.modal {
+  background: var(--surface) !important;
+  border-color: var(--border2) !important;
+  border-radius: 12px !important;
+}
+
+/* Scrollbar — warm */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Typing indicator */
+.typing-bubble {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+/* Section labels */
+.section-label {
+  font-size: 8px !important;
+  letter-spacing: .15em !important;
+  opacity: .7;
+}
+
+/* Member cards */
+.member-card {
+  border-radius: 0 !important;
+  transition: background .15s !important;
+}
+.member-card:hover {
+  background: rgba(200,121,65,.04) !important;
+}
+
+/* Input section bg */
+.input-section {
+  background: var(--bg) !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+/* Hint chips */
+.hint-chip {
+  border-radius: 6px !important;
+  font-size: 10px !important;
+  border-color: var(--border2) !important;
+}
+.hint-chip:hover {
+  border-color: var(--ceo) !important;
+  color: var(--ceo) !important;
+  background: rgba(200,121,65,.05) !important;
+}
+
+/* Welcome title */
+.welcome-title { color: var(--text) !important; }
+
+/* Progress bar */
+.pbar-fill { background: var(--ceo) !important; }
+
+/* Add member btn */
+.add-member-btn:hover {
+  color: var(--ceo) !important;
+  background: rgba(200,121,65,.04) !important;
+}
+
+/* Overlay bg */
+.overlay { backdrop-filter: blur(8px); }
+
+/* Btn primary warm */
+.btn-primary {
+  background: var(--ceo) !important;
+  border-radius: 8px !important;
+}
+.btn-primary:hover { background: #d4895a !important; }
+
+/* Team memory badge */
+.mem-indicator {
+  background: rgba(196,154,110,.15) !important;
+  color: var(--memory) !important;
+  border-color: rgba(196,154,110,.25) !important;
+}
+
+/* Live dot */
+@keyframes warmPulse {
+  0%,100% { box-shadow: 0 0 4px var(--success); }
+  50% { box-shadow: 0 0 10px var(--success); }
+}
+
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="brand">UNO <em>EX</em></div>
+  <div class="brand">TOP <em>COMPANY</em></div>
   <div class="topbar-divider"></div>
   <div class="team-pills">
     <div class="pill pill-all active" onclick="filterTeam('all',this)">ALL</div>
@@ -700,7 +917,7 @@ textarea#inp::placeholder { color: var(--muted); }
   <button class="mem-btn" onclick="openMemModal()">🧬 TEAM MEMORY</button>
   <div class="topbar-right">
     <div class="live-dot"></div>
-    <span id="agentCount">13 AGENTS</span>
+    <span id="aiModeIndicator" style="font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(200,121,65,.1);color:var(--ceo);font-family:'DM Mono',monospace;cursor:pointer" onclick="openSettingsModal()">☁️ Claude</span><span id="agentCount">13 AGENTS</span>
     <span id="totalMemCount" style="color:var(--memory)">0 MEM</span>
     <span id="clock"></span>
   </div>
@@ -729,8 +946,8 @@ textarea#inp::placeholder { color: var(--muted); }
   <div class="chat-wrapper">
     <div class="chat-scroll" id="chatScroll">
       <div class="welcome" id="welcomeEl">
-        <div class="welcome-title">UNO <em>EX</em></div>
-        <div style="font-size:12px;color:var(--muted2);font-family:'JetBrains Mono',monospace;">AI COMPANY · 4 EXPERT TEAMS · PERSISTENT MEMORY</div>
+        <div class="welcome-title">TOP <em>COMPANY</em></div>
+        <div style="font-size:12px;color:var(--muted2);font-family:'DM Mono',monospace;">AI COMPANY · 4 EXPERT TEAMS · PERSISTENT MEMORY</div>
         <div class="team-grid">
           <div class="tc" style="border-color:var(--geo);background:var(--geo-bg);" onclick="useHint('วิเคราะห์ชั้นดินและสร้าง Geotechnical Report')">
             <div class="tc-icon">⛰️</div>
@@ -757,7 +974,7 @@ textarea#inp::placeholder { color: var(--muted); }
             <div class="mem-ribbon" id="ribbon-finance">🧬 <span>กำลังโหลด...</span></div>
           </div>
         </div>
-        <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted)">// ทีม AI จะจำสิ่งที่เรียนรู้ไว้ข้ามเซสชัน</div>
+        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)">// ทีม AI จะจำสิ่งที่เรียนรู้ไว้ข้ามเซสชัน</div>
       </div>
     </div>
     <div class="input-section">
@@ -883,7 +1100,7 @@ textarea#inp::placeholder { color: var(--muted); }
 <div class="overlay" id="memOverlay">
   <div class="modal" style="width:480px">
     <h3>🧬 จัดการ Team Memory</h3>
-    <div style="font-size:11px;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-bottom:14px;">
+    <div style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;margin-bottom:14px;">
       Memory ถูกเก็บถาวรข้ามเซสชัน — ทีม AI จะอ่านและใช้ข้อมูลนี้ทุกครั้งที่ทำงาน
     </div>
     <div id="memModalContent"></div>
@@ -896,22 +1113,16 @@ textarea#inp::placeholder { color: var(--muted); }
 
 <script>
 // ────────────────────────────────────────────────────────────
-// STORAGE (simulates persistent storage across sessions)
+// STORAGE — in-memory only (no localStorage needed)
 // ────────────────────────────────────────────────────────────
-// Uses localStorage as persistent backend
-const STORAGE_KEY = 'unoex_team_memory_v2';
+let _memoryStore = { geo:[], seismic:[], gov:[], finance:[] };
 
 function loadAllMemory() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { geo:[], seismic:[], gov:[], finance:[] };
-  } catch(e) {
-    return { geo:[], seismic:[], gov:[], finance:[] };
-  }
+  return JSON.parse(JSON.stringify(_memoryStore));
 }
 
 function saveAllMemory(mem) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mem)); } catch(e) {}
+  _memoryStore = JSON.parse(JSON.stringify(mem));
 }
 
 function getTeamMemory(team) {
@@ -1443,15 +1654,15 @@ function openMemModal(){
       <div style="margin-bottom:16px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <span style="color:${tm.color};font-weight:700;font-size:12px;">${tm.icon} ${tm.label}</span>
-          <span style="font-size:10px;color:var(--muted2);font-family:'JetBrains Mono',monospace;">${arr.length} entries</span>
+          <span style="font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;">${arr.length} entries</span>
           <button onclick="clearTeamMem('${t}')" style="margin-left:auto;font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid #f44336;color:#f44336;background:none;cursor:pointer;">ล้างทั้งหมด</button>
         </div>
-        ${arr.length===0?`<div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;padding:6px 0">// ยังไม่มี memory</div>`:''}
+        ${arr.length===0?`<div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;padding:6px 0">// ยังไม่มี memory</div>`:''}
         ${arr.slice().reverse().map(e=>`
           <div class="mem-modal-entry">
             <div style="flex:1">
-              <div style="font-size:9px;color:${tm.color};margin-bottom:4px;font-family:'JetBrains Mono',monospace;">${e.agent} · ${e.ts}</div>
-              <div style="font-size:11px;color:var(--muted2);font-family:'JetBrains Mono',monospace;line-height:1.5">${e.text}</div>
+              <div style="font-size:9px;color:${tm.color};margin-bottom:4px;font-family:'DM Mono',monospace;">${e.agent} · ${e.ts}</div>
+              <div style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;line-height:1.5">${e.text}</div>
             </div>
             <button onclick="deleteMemEntry('${t}',${e.id});openMemModal();" style="font-size:10px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0 4px;">✕</button>
           </div>
@@ -1570,7 +1781,7 @@ function openDrawer(type) {
     const labels = {'geo':'Geotechnical','seismic':'Seismic Survey','gov':'Government','finance':'Finance'};
     let html = '';
     try {
-      const all = JSON.parse(localStorage.getItem('unoex_team_memory_v2') || '{}');
+      const all = loadAllMemory();
       let total = 0;
       teams.forEach(t => { total += (all[t]||[]).length; });
       if (!total) {
@@ -1627,6 +1838,521 @@ window.addEventListener('resize', checkLayout);
 window.addEventListener('DOMContentLoaded', checkLayout);
 setTimeout(checkLayout, 100);
 </script>
+
+
+<!-- ══════════════════════════════════════
+     TRAINING MODAL
+══════════════════════════════════════ -->
+<div class="overlay" id="trainOverlay">
+  <div class="modal" style="width:480px;max-width:95vw">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:20px">🎓</span>
+      <h3 style="font-size:15px;font-weight:700">Train Team from Files</h3>
+    </div>
+    <div style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;margin-bottom:18px">
+      อัปโหลดไฟล์ให้ AI แต่ละทีมเรียนรู้ — รองรับ PDF, TXT, MD, CSV, JSON
+    </div>
+
+    <!-- Team selector -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="train-team-btn on" data-team="geo" style="--tc:#e8a045" onclick="selectTrainTeam('geo',this)">⛰️ Geotechnical</button>
+      <button class="train-team-btn" data-team="seismic" style="--tc:#4fc3f7" onclick="selectTrainTeam('seismic',this)">📡 Seismic</button>
+      <button class="train-team-btn" data-team="gov" style="--tc:#81c784" onclick="selectTrainTeam('gov',this)">🏛️ Government</button>
+      <button class="train-team-btn" data-team="finance" style="--tc:#ce93d8" onclick="selectTrainTeam('finance',this)">📈 Finance</button>
+    </div>
+
+    <!-- Upload zone -->
+    <div id="trainDropZone" onclick="document.getElementById('trainFileInput').click()"
+      style="border:2px dashed var(--border2);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px;background:var(--bg)">
+      <div style="font-size:32px;margin-bottom:8px">📂</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px">คลิกหรือลากไฟล์มาวางที่นี่</div>
+      <div style="font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace">PDF · TXT · MD · CSV · JSON · DOCX</div>
+    </div>
+    <input type="file" id="trainFileInput" multiple accept=".pdf,.txt,.md,.csv,.json,.docx,.xlsx"
+      style="display:none" onchange="handleTrainFiles(this.files)">
+
+    <!-- File list -->
+    <div id="trainFileList" style="margin-bottom:14px;max-height:160px;overflow-y:auto"></div>
+
+    <!-- Progress -->
+    <div id="trainProgress" style="display:none;margin-bottom:14px">
+      <div style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;margin-bottom:6px" id="trainStatusText">กำลังประมวลผล...</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+        <div id="trainProgressBar" style="height:100%;background:var(--ceo);border-radius:2px;transition:width .3s;width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Result log -->
+    <div id="trainLog" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:12px;max-height:120px;overflow-y:auto;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted2);margin-bottom:14px;line-height:1.8"></div>
+
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeTrainModal()">ปิด</button>
+      <button class="btn-primary" id="trainStartBtn" onclick="startTraining()">🚀 เริ่ม Training</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.train-team-btn {
+  padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 600;
+  border: 1px solid var(--tc, #888); color: var(--tc, #888);
+  background: transparent; cursor: pointer; transition: all .18s;
+  font-family: 'DM Mono', monospace;
+}
+.train-team-btn.on {
+  background: color-mix(in srgb, var(--tc) 15%, transparent);
+  color: var(--tc);
+}
+.train-team-btn:hover { opacity: .8; }
+
+.train-file-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 7px;
+  border: 1px solid var(--border2); background: var(--bg);
+  margin-bottom: 5px; font-size: 11px; animation: fadeUp .2s ease;
+}
+.train-file-status {
+  margin-left: auto; font-size: 9px; padding: 2px 6px; border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+}
+.tfs-wait   { background: rgba(74,82,112,.3);  color: var(--muted2); }
+.tfs-proc   { background: rgba(255,152,0,.2);  color: #ff9800; }
+.tfs-done   { background: rgba(76,175,80,.2);  color: #4caf50; }
+.tfs-err    { background: rgba(244,67,54,.2);  color: #f44336; }
+
+#trainDropZone:hover, #trainDropZone.drag-over {
+  border-color: var(--ceo) !important;
+  background: rgba(255,95,95,.05) !important;
+}
+</style>
+
+<script>
+// ══════════════════════════════════════
+// TRAINING SYSTEM
+// ══════════════════════════════════════
+let trainTeam = 'geo';
+let trainFiles = [];
+
+const TEAM_PROMPTS_TRAIN = {
+  geo:     'คุณคือผู้เชี่ยวชาญด้าน Geotechnical Engineering อ่านเอกสารต่อไปนี้และสรุปความรู้สำคัญที่เกี่ยวข้องกับ: ชั้นดิน ฐานราก การทดสอบดิน SPT/CPT การวิเคราะห์เสถียรภาพ Geotechnical Report ออกมาเป็นข้อๆ กระชับ ภาษาไทย ไม่เกิน 5 ข้อต่อไฟล์',
+  seismic: 'คุณคือผู้เชี่ยวชาญด้าน Seismic Survey อ่านเอกสารต่อไปนี้และสรุปความรู้สำคัญที่เกี่ยวข้องกับ: การสำรวจคลื่น Seismic การประมวลผลข้อมูล การแปลผล Horizon/Fault ออกมาเป็นข้อๆ กระชับ ภาษาไทย ไม่เกิน 5 ข้อต่อไฟล์',
+  gov:     'คุณคือผู้เชี่ยวชาญด้านงานราชการและกฎหมาย อ่านเอกสารต่อไปนี้และสรุปความรู้สำคัญที่เกี่ยวข้องกับ: กฎระเบียบ ขั้นตอนราชการ การขออนุญาต กฎหมายที่เกี่ยวข้อง ออกมาเป็นข้อๆ กระชับ ภาษาไทย ไม่เกิน 5 ข้อต่อไฟล์',
+  finance: 'คุณคือผู้เชี่ยวชาญด้านการเงินและการลงทุน อ่านเอกสารต่อไปนี้และสรุปความรู้สำคัญที่เกี่ยวข้องกับ: กลยุทธ์การลงทุน การวิเคราะห์หุ้น ความเสี่ยง Technical/Fundamental Analysis ออกมาเป็นข้อๆ กระชับ ภาษาไทย ไม่เกิน 5 ข้อต่อไฟล์',
+};
+
+const TEAM_LABELS = { geo:'Geotechnical', seismic:'Seismic Survey', gov:'Government', finance:'Finance' };
+const API_KEY_PLACEHOLDER = '%%API_KEY%%';
+
+function openTrainModal() {
+  document.getElementById('trainOverlay').classList.add('open');
+  trainFiles = [];
+  renderTrainFileList();
+  document.getElementById('trainLog').style.display = 'none';
+  document.getElementById('trainProgress').style.display = 'none';
+}
+
+function closeTrainModal() {
+  document.getElementById('trainOverlay').classList.remove('open');
+}
+
+function selectTrainTeam(team, el) {
+  trainTeam = team;
+  document.querySelectorAll('.train-team-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function handleTrainFiles(files) {
+  Array.from(files).forEach(f => {
+    if (!trainFiles.find(x => x.name === f.name)) {
+      trainFiles.push({ file: f, name: f.name, status: 'wait' });
+    }
+  });
+  renderTrainFileList();
+}
+
+function renderTrainFileList() {
+  const el = document.getElementById('trainFileList');
+  if (!trainFiles.length) { el.innerHTML = ''; return; }
+  el.innerHTML = trainFiles.map((f, i) => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const icons = { PDF:'📄', TXT:'📝', MD:'📝', CSV:'📊', JSON:'🔧', DOCX:'📄', XLSX:'📊' };
+    const icon = icons[ext] || '📎';
+    const statusClass = { wait:'tfs-wait', proc:'tfs-proc', done:'tfs-done', err:'tfs-err' }[f.status];
+    const statusLabel = { wait:'รอ', proc:'กำลังเรียนรู้...', done:'✓ เรียนรู้แล้ว', err:'✗ Error' }[f.status];
+    return `<div class="train-file-item">
+      <span style="font-size:16px">${icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.name}</div>
+        <div style="font-size:9px;color:var(--muted2);font-family:'DM Mono',monospace">${(f.file.size/1024).toFixed(1)} KB · ${ext}</div>
+      </div>
+      <span class="train-file-status ${statusClass}">${statusLabel}</span>
+      ${f.status === 'wait' ? `<button onclick="trainFiles.splice(${i},1);renderTrainFileList()" style="font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;padding:0 3px">✕</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    // For PDF — read as text (basic extraction)
+    if (file.name.endsWith('.pdf')) {
+      reader.onload = e => {
+        // Extract readable text from PDF binary (basic)
+        const raw = e.target.result;
+        // Get printable ASCII chars
+        let text = '';
+        for (let i = 0; i < raw.length; i++) {
+          const c = raw.charCodeAt(i);
+          if ((c >= 32 && c < 127) || c === 10 || c === 13) {
+            text += raw[i];
+          }
+        }
+        // Clean up — remove short fragments
+        text = text.split('\n').filter(l => l.trim().length > 20).join('\n');
+        resolve(text.substring(0, 8000)); // limit
+      };
+      reader.onerror = reject;
+      reader.readAsBinaryString(file);
+    } else {
+      reader.onload = e => resolve(e.target.result.substring(0, 8000));
+      reader.onerror = reject;
+      reader.readAsText(file, 'UTF-8');
+    }
+  });
+}
+
+function setTrainProgress(pct, text) {
+  document.getElementById('trainProgressBar').style.width = pct + '%';
+  document.getElementById('trainStatusText').textContent = text;
+}
+
+function appendTrainLog(text, color) {
+  const log = document.getElementById('trainLog');
+  log.style.display = 'block';
+  const line = document.createElement('div');
+  line.style.color = color || 'var(--muted2)';
+  line.textContent = text;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function startTraining() {
+  if (!trainFiles.length) {
+    alert('กรุณาเลือกไฟล์ก่อนครับ');
+    return;
+  }
+
+  const workerUrl = localStorage.getItem('ttm_worker_url') || '';
+  if (!workerUrl) {
+    alert('กรุณาตั้งค่า Worker URL ก่อนครับ — กดปุ่ม ⚙️ Settings');
+    openSettingsModal();
+    return;
+  }
+
+  document.getElementById('trainStartBtn').disabled = true;
+  document.getElementById('trainProgress').style.display = 'block';
+  document.getElementById('trainLog').innerHTML = '';
+  document.getElementById('trainLog').style.display = 'block';
+
+  const teamLabel = TEAM_LABELS[trainTeam];
+  const systemPrompt = TEAM_PROMPTS_TRAIN[trainTeam];
+  let successCount = 0;
+
+  appendTrainLog(`🎓 เริ่ม Training ทีม ${teamLabel} จาก ${trainFiles.length} ไฟล์`, 'var(--ceo)');
+
+  for (let i = 0; i < trainFiles.length; i++) {
+    const f = trainFiles[i];
+    trainFiles[i].status = 'proc';
+    renderTrainFileList();
+    setTrainProgress(Math.round((i / trainFiles.length) * 100), `กำลังเรียนรู้: ${f.name} (${i+1}/${trainFiles.length})`);
+    appendTrainLog(`📖 อ่านไฟล์: ${f.name}...`);
+
+    try {
+      // Read file content
+      const text = await readFileAsText(f.file);
+      if (!text.trim()) {
+        throw new Error('ไม่พบเนื้อหาในไฟล์');
+      }
+
+      appendTrainLog(`   → ${text.length} ตัวอักษร`);
+      appendTrainLog(`   → กำลังวิเคราะห์...`);
+
+      // Call Claude API to summarize
+      const workerUrl = localStorage.getItem('ttm_worker_url') || '';
+      if(!workerUrl) throw new Error('ยังไม่ได้ตั้งค่า Worker URL — กดปุ่ม ⚙️ Settings');
+      const res = await fetch(workerUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 800,
+          system: systemPrompt,
+          messages: [{
+            role: 'user',
+            content: `ชื่อไฟล์: ${f.name}\n\nเนื้อหา:\n${text}`
+          }]
+        })
+      });
+
+      if (!res.ok) throw new Error(`API Error ${res.status}`);
+      const data = await res.json();
+      const summary = data.content?.[0]?.text || '';
+
+      if (summary) {
+        // Save to team memory
+        addMemoryEntry(trainTeam, `📚 ${f.name}`, summary);
+        trainFiles[i].status = 'done';
+        successCount++;
+        appendTrainLog(`   ✓ เรียนรู้เสร็จ — บันทึกเข้า Memory ทีม ${teamLabel}`, '#4caf50');
+      }
+
+    } catch (err) {
+      trainFiles[i].status = 'err';
+      appendTrainLog(`   ✗ Error: ${err.message}`, '#f44336');
+    }
+
+    renderTrainFileList();
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  setTrainProgress(100, `เสร็จสิ้น! เรียนรู้ ${successCount}/${trainFiles.length} ไฟล์`);
+  appendTrainLog(`\n🎉 Training เสร็จ! ทีม ${teamLabel} เรียนรู้จาก ${successCount} ไฟล์แล้ว`, 'var(--ceo)');
+  appendTrainLog(`💡 ทีมจะใช้ความรู้นี้ทุกครั้งที่ทำงานใน session นี้`, 'var(--memory)');
+
+  document.getElementById('trainStartBtn').disabled = false;
+
+  // Refresh memory display
+  if (typeof refreshMemoryUI === 'function') refreshMemoryUI();
+  renderSidebar();
+}
+
+// ── DRAG & DROP ──────────────────────────────
+const dz = document.getElementById('trainDropZone');
+if (dz) {
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    handleTrainFiles(e.dataTransfer.files);
+  });
+}
+
+// ── API KEY MANAGER ──────────────────────────
+window._ttmApiKey = '%%API_KEY%%';
+
+function openSettingsModal() {
+  document.getElementById('settingsOverlay').classList.add('open');
+  // Load saved worker URL
+  const saved = localStorage.getItem('ttm_worker_url') || '';
+  document.getElementById('workerUrlInput').value = saved;
+}
+
+function closeSettingsModal() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+
+function saveSettings() {
+  const url = document.getElementById('workerUrlInput').value.trim();
+  if (!url || !url.startsWith('https://')) {
+    alert('Worker URL ต้องขึ้นต้นด้วย https://');
+    return;
+  }
+  localStorage.setItem('ttm_worker_url', url);
+
+  // Save AI mode
+  const mode = localStorage.getItem('ttm_ai_mode') || 'anthropic';
+  if (mode === 'ollama') {
+    const sel = document.getElementById('ollamaModelSelect').value;
+    const model = sel === 'custom'
+      ? document.getElementById('ollamaModelCustom').value.trim()
+      : sel;
+    localStorage.setItem('ttm_ollama_model', model);
+  }
+
+  testWorkerConnection(url);
+}
+
+function setAIMode(mode) {
+  localStorage.setItem('ttm_ai_mode', mode);
+  const anthropicBtn = document.getElementById('modeAnthropicBtn');
+  const ollamaBtn = document.getElementById('modeOllamaBtn');
+  const ollamaSection = document.getElementById('ollamaModelSection');
+
+  if (mode === 'ollama') {
+    anthropicBtn.style.border = '2px solid var(--border2)';
+    anthropicBtn.style.background = 'transparent';
+    anthropicBtn.querySelector('div:nth-child(2)').style.color = 'var(--muted2)';
+    ollamaBtn.style.border = '2px solid var(--ceo)';
+    ollamaBtn.style.background = 'rgba(200,121,65,.08)';
+    ollamaBtn.querySelector('div:nth-child(2)').style.color = 'var(--ceo)';
+    ollamaSection.style.display = 'block';
+  } else {
+    anthropicBtn.style.border = '2px solid var(--ceo)';
+    anthropicBtn.style.background = 'rgba(200,121,65,.08)';
+    anthropicBtn.querySelector('div:nth-child(2)').style.color = 'var(--ceo)';
+    ollamaBtn.style.border = '2px solid var(--border2)';
+    ollamaBtn.style.background = 'transparent';
+    ollamaBtn.querySelector('div:nth-child(2)').style.color = 'var(--muted2)';
+    ollamaSection.style.display = 'none';
+  }
+}
+
+// init mode on open
+const _origOpenSettings = openSettingsModal;
+function openSettingsModal() {
+  _origOpenSettings();
+  const savedMode = localStorage.getItem('ttm_ai_mode') || 'anthropic';
+  setAIMode(savedMode);
+  // restore model
+  const savedModel = localStorage.getItem('ttm_ollama_model') || 'llama3.1:8b';
+  const sel = document.getElementById('ollamaModelSelect');
+  if (sel) {
+    const opt = Array.from(sel.options).find(o => o.value === savedModel);
+    if (opt) sel.value = savedModel;
+    else {
+      sel.value = 'custom';
+      document.getElementById('ollamaModelCustom').style.display = 'block';
+      document.getElementById('ollamaModelCustom').value = savedModel;
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('ollamaModelSelect');
+  if (sel) sel.addEventListener('change', () => {
+    const custom = document.getElementById('ollamaModelCustom');
+    custom.style.display = sel.value === 'custom' ? 'block' : 'none';
+  });
+});
+
+async function testWorkerConnection(url) {
+  document.getElementById('settingsStatus').textContent = '🔄 กำลังทดสอบการเชื่อมต่อ...';
+  document.getElementById('settingsStatus').style.color = 'var(--warn)';
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 50,
+        system: 'ตอบสั้นๆ',
+        messages: [{ role: 'user', content: 'ping' }]
+      })
+    });
+    if (r.ok) {
+      document.getElementById('settingsStatus').textContent = '✅ เชื่อมต่อสำเร็จ! Worker ทำงานปกติ';
+      document.getElementById('settingsStatus').style.color = '#4caf50';
+    } else {
+      throw new Error('status ' + r.status);
+    }
+  } catch(e) {
+    document.getElementById('settingsStatus').textContent = '❌ เชื่อมต่อไม่ได้: ' + e.message;
+    document.getElementById('settingsStatus').style.color = '#f44336';
+  }
+}
+</script>
+
+
+<!-- ══════════════════════════════
+     SETTINGS MODAL
+══════════════════════════════ -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal" style="width:460px;max-width:95vw">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:20px">⚙️</span>
+      <h3 style="font-size:15px;font-weight:700">Settings — Top Company</h3>
+    </div>
+
+    <!-- Step guide -->
+    <div style="background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:18px">
+      <div style="font-size:10px;letter-spacing:.1em;color:var(--muted2);text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px">SETUP GUIDE</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.6">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:var(--ceo);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px">1</span>
+          <div>สมัคร <a href="https://dash.cloudflare.com" target="_blank" style="color:var(--ceo)">cloudflare.com</a> → Workers & Pages → Create Worker</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:var(--ceo);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px">2</span>
+          <div>วาง code จากไฟล์ <code style="background:var(--border2);padding:1px 5px;border-radius:3px;font-size:10px">cloudflare-worker.js</code> ลงใน Worker editor</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:var(--ceo);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px">3</span>
+          <div>Settings → Variables → Add secret: <code style="background:var(--border2);padding:1px 5px;border-radius:3px;font-size:10px">ANTHROPIC_API_KEY</code> = API key ของคุณ</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:var(--ceo);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px">4</span>
+          <div>Deploy → copy Worker URL เช่น <code style="background:var(--border2);padding:1px 5px;border-radius:3px;font-size:10px">https://xxx.workers.dev</code></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:var(--ceo);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px">5</span>
+          <div>ใส่ URL ด้านล่าง → Save & Test</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Worker URL input -->
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;letter-spacing:.1em;margin-bottom:6px;text-transform:uppercase">Cloudflare Worker URL</label>
+      <input id="workerUrlInput" type="url" placeholder="https://your-worker.your-subdomain.workers.dev"
+        style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--tx);font-size:13px;outline:none;font-family:'DM Mono',monospace"/>
+    </div>
+
+    <!-- AI Mode selector -->
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase">AI Engine</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div id="modeAnthropicBtn" onclick="setAIMode('anthropic')" style="padding:12px;border-radius:8px;border:2px solid var(--ceo);background:rgba(200,121,65,.08);cursor:pointer;text-align:center;transition:all .2s">
+          <div style="font-size:18px;margin-bottom:4px">☁️</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ceo)">Claude API</div>
+          <div style="font-size:9px;color:var(--muted2);margin-top:2px">ฉลาดสุด จ่ายตามใช้</div>
+        </div>
+        <div id="modeOllamaBtn" onclick="setAIMode('ollama')" style="padding:12px;border-radius:8px;border:2px solid var(--border2);background:transparent;cursor:pointer;text-align:center;transition:all .2s">
+          <div style="font-size:18px;margin-bottom:4px">🖥️</div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted2)">Local AI (Ollama)</div>
+          <div style="font-size:9px;color:var(--muted2);margin-top:2px">ฟรี 100% บนเครื่องคุณ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ollama model selector (shown when ollama mode) -->
+    <div id="ollamaModelSection" style="display:none;margin-bottom:14px">
+      <label style="display:block;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;letter-spacing:.1em;margin-bottom:6px;text-transform:uppercase">Ollama Model</label>
+      <select id="ollamaModelSelect" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Mono',monospace">
+        <option value="llama3.1:8b">llama3.1:8b — แนะนำ (สมดุล)</option>
+        <option value="mistral:7b">mistral:7b — เร็วกว่า</option>
+        <option value="llama3.1:70b-q4_K_M">llama3.1:70b-q4 — ฉลาดสุด (ช้ากว่า)</option>
+        <option value="custom">Custom model...</option>
+      </select>
+      <input id="ollamaModelCustom" placeholder="ชื่อ model เช่น my-finance-model:latest" style="display:none;width:100%;margin-top:6px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Mono',monospace">
+
+      <!-- Ollama setup guide -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;line-height:1.8">
+        <div style="color:var(--text);font-weight:600;margin-bottom:6px">วิธีเปิด Ollama ให้ Top Company เข้าถึงได้:</div>
+        <div style="color:var(--ceo)">1. ติดตั้ง Ollama → ollama.com/download</div>
+        <div>2. PowerShell: <span style="color:var(--text)">$env:OLLAMA_HOST="0.0.0.0:11434"</span></div>
+        <div>3. PowerShell: <span style="color:var(--text)">ollama serve</span></div>
+        <div style="color:var(--ceo)">4. ติดตั้ง cloudflared → winget install Cloudflare.cloudflared</div>
+        <div>5. <span style="color:var(--text)">cloudflared tunnel login</span></div>
+        <div>6. <span style="color:var(--text)">cloudflared tunnel create top-ai</span></div>
+        <div>7. <span style="color:var(--text)">cloudflared tunnel run --url http://localhost:11434 top-ai</span></div>
+        <div style="color:var(--ceo)">8. Copy URL → ใส่ใน Worker env OLLAMA_URL</div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div id="settingsStatus" style="font-size:11px;font-family:'DM Mono',monospace;min-height:20px;margin-bottom:14px;color:var(--muted2)"></div>
+
+    <!-- Security note -->
+    <div style="background:rgba(244,114,182,.07);border:1px solid rgba(244,114,182,.2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:11px;line-height:1.7;color:var(--muted2)">
+      🔐 <strong style="color:var(--memory)">ความปลอดภัย</strong> — API Key เก็บอยู่ใน Cloudflare Worker เท่านั้น ไม่มีใน HTML ไม่โผล่ใน source code และไม่ถูกส่งมายัง browser เลย
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeSettingsModal()">ปิด</button>
+      <button class="btn-primary" onclick="saveSettings()">💾 Save & Test</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
