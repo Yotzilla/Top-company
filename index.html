@@ -119,6 +119,19 @@ html,body{height:100%;background:var(--navy);color:var(--text);font-family:var(-
 .page-title{font-family:var(--px);font-size:9px;color:var(--teal);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--b1);flex-shrink:0}
 .chat-layout{display:flex;gap:8px;flex:1;min-height:0}
 .chat-agents-list{width:155px;flex-shrink:0;background:var(--navy2);border:1px solid var(--b2);border-radius:4px;overflow-y:auto}
+.conv-list{width:170px;flex-shrink:0;background:var(--navy2);border:1px solid var(--b2);border-radius:4px;overflow-y:auto;display:flex;flex-direction:column}
+.conv-header{font-family:var(--px);font-size:6px;color:var(--teal);padding:8px 10px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.conv-new-btn{font-family:var(--px);font-size:5px;padding:3px 6px;border:1px solid var(--teal);border-radius:2px;background:transparent;color:var(--teal);cursor:pointer}
+.conv-new-btn:hover{background:rgba(0,229,180,.1)}
+.conv-item{padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--b1);transition:.1s;font-size:10px}
+.conv-item:hover{background:var(--navy3)}
+.conv-item.active{background:rgba(0,229,180,.08);border-left:3px solid var(--teal)}
+.conv-item-name{font-family:var(--px);font-size:6px;margin-bottom:3px}
+.conv-item-preview{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
+.conv-item-time{font-family:var(--px);font-size:5px;color:var(--dim);margin-top:2px}
+.conv-item-del{float:right;color:var(--dim);cursor:pointer;font-size:10px;opacity:0}
+.conv-item:hover .conv-item-del{opacity:1}
+.conv-item-del:hover{color:var(--red)}
 .cal-header{font-family:var(--px);font-size:6px;color:var(--teal);padding:8px 10px;border-bottom:1px solid var(--b1)}
 .cal-item{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:pointer;font-size:11px;border-bottom:1px solid var(--b1);transition:.1s}
 .cal-item:hover{background:var(--navy3)}
@@ -621,6 +634,13 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
     </div>
     <div class="page" id="page-chat" style="padding:10px">
       <div class="chat-layout">
+        <div class="conv-list">
+          <div class="conv-header">
+            <span>HISTORY</span>
+            <button class="conv-new-btn" onclick="newConversation()">+ NEW</button>
+          </div>
+          <div id="conv-list"></div>
+        </div>
         <div class="chat-agents-list">
           <div class="cal-header">SELECT AGENT</div>
           <div id="chat-agent-list"></div>
@@ -833,8 +853,162 @@ const COLORS={"apex": "#ec4899", "terra": "#00e5b4", "kore": "#00e5b4", "strata"
 const DEPTS={"apex": "CEO", "terra": "GEOTECHNICAL", "kore": "GEOTECHNICAL", "strata": "GEOTECHNICAL", "wave": "SEISMIC", "quanta": "SEISMIC", "pulse": "SEISMIC", "lex": "GOVERNMENT", "forma": "GOVERNMENT", "regs": "GOVERNMENT", "sigma": "FINANCE", "delta": "FINANCE", "flux": "FINANCE", "alpha": "FINANCE"};
 const WORKER='https://top-company.yotsawattop1995.workers.dev';
 
+// ── HTML escape เพื่อป้องกัน XSS ──
+function escapeHtml(text) {
+  if (text == null) return '';
+  var div = document.createElement('div');
+  div.textContent = String(text);
+  return div.innerHTML;
+}
+// แปลง newline เป็น <br> หลัง escape แล้ว
+function safeText(text) {
+  return escapeHtml(text).replace(/\n/g, '<br>');
+}
+
 const ORDER=['apex','terra','kore','strata','wave','quanta','pulse','lex','forma','regs','sigma','delta','flux','alpha'];
 let currentMode = localStorage.getItem('ttm_ai_mode')||'anthropic';
+
+// ── PERSISTENT CHAT HISTORY ──
+var conversations = {};   // { convId: { agent, title, messages, time } }
+var currentConvId = null;
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function saveConversations() {
+  try {
+    // เก็บแค่ 50 conversations ล่าสุด
+    var keys = Object.keys(conversations).sort((a,b) => 
+      conversations[b].time - conversations[a].time
+    );
+    var trimmed = {};
+    keys.slice(0,50).forEach(k => trimmed[k] = conversations[k]);
+    conversations = trimmed;
+    localStorage.setItem('tc_conversations', JSON.stringify(conversations));
+  } catch(e) { console.log('Save failed:', e); }
+}
+
+function loadConversations() {
+  try {
+    var raw = localStorage.getItem('tc_conversations');
+    if (raw) conversations = JSON.parse(raw);
+  } catch(e) { conversations = {}; }
+}
+
+function newConversation() {
+  var id = genId();
+  conversations[id] = {
+    agent: currentAgent,
+    title: currentAgent.toUpperCase() + ' Chat',
+    messages: [],
+    history: [],
+    time: Date.now()
+  };
+  currentConvId = id;
+  saveConversations();
+  renderConvList();
+  // Clear chat UI
+  document.getElementById('chat-messages').innerHTML = 
+    '<div class="msg"><div class="msg-avatar"><img src="'+SPRITES[currentAgent]+'" width="28" height="28" style="image-rendering:pixelated"></div>'+
+    '<div><div class="msg-name">'+currentAgent.toUpperCase()+'</div>'+
+    '<div class="msg-bubble">Hello! I am '+currentAgent.toUpperCase()+', ready to help with '+ROLES[currentAgent]+'.</div></div></div>';
+  chatHistory = [];
+  return id;
+}
+
+function deleteConversation(id, e) {
+  e.stopPropagation();
+  delete conversations[id];
+  if (currentConvId === id) {
+    currentConvId = null;
+    var keys = Object.keys(conversations);
+    if (keys.length > 0) {
+      loadConversation(keys[keys.length-1]);
+    } else {
+      newConversation();
+    }
+  }
+  saveConversations();
+  renderConvList();
+}
+
+function loadConversation(id) {
+  var conv = conversations[id];
+  if (!conv) return;
+  currentConvId = id;
+  currentAgent = conv.agent;
+  chatHistory = conv.history || [];
+  
+  // Update header
+  document.getElementById('chat-hdr-name').textContent = conv.agent.toUpperCase();
+  document.getElementById('chat-hdr-name').style.color = COLORS[conv.agent];
+  document.getElementById('chat-hdr-role').textContent = ROLES[conv.agent];
+  document.getElementById('chat-hdr-sprite').src = SPRITES[conv.agent];
+  
+  // Render messages
+  var msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = '';
+  (conv.messages || []).forEach(function(m) {
+    var el = document.createElement('div');
+    el.className = 'msg' + (m.role==='user'?' user':'');
+    var color = m.role==='user' ? 'var(--teal)' : COLORS[conv.agent]||'var(--dim)';
+    var av = m.role==='user'
+      ? '<div class="msg-avatar" style="background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-family:var(--px);font-size:11px">Y</div>'
+      : '<div class="msg-avatar"><img src="'+SPRITES[conv.agent]+'" width="28" height="28" style="image-rendering:pixelated"></div>';
+    el.innerHTML = av+'<div><div class="msg-name" style="color:'+color+'">'+m.name+'</div>'+
+      '<div class="msg-bubble">'+safeText(m.text)+'</div>'+
+      '<div class="msg-time">'+m.time+'</div></div>';
+    msgs.appendChild(el);
+  });
+  var m2 = document.getElementById('chat-messages');
+  m2.scrollTop = m2.scrollHeight;
+  
+  // Update sidebar
+  buildChatAgentList();
+  renderConvList();
+}
+
+function renderConvList() {
+  var list = document.getElementById('conv-list');
+  if (!list) return;
+  var keys = Object.keys(conversations).sort((a,b) => 
+    conversations[b].time - conversations[a].time
+  );
+  if (keys.length === 0) {
+    list.innerHTML = '<div style="padding:10px;font-size:10px;color:var(--dim)">No conversations yet</div>';
+    return;
+  }
+  list.innerHTML = keys.map(function(id) {
+    var c = conversations[id];
+    var isActive = id === currentConvId;
+    var preview = c.messages && c.messages.length > 0 
+      ? c.messages[c.messages.length-1].text.slice(0,40)
+      : 'New conversation';
+    var timeStr = new Date(c.time).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+    return '<div class="conv-item'+(isActive?' active':'')+'" onclick="loadConversation(\'+id+\')">'
+      +'<span class="conv-item-del" onclick="deleteConversation(\'+id+\',event)">&#10005;</span>'
+      +'<div class="conv-item-name" style="color:'+COLORS[c.agent]+'">'+c.agent.toUpperCase()+'</div>'
+      +'<div class="conv-item-preview">'+escapeHtml(preview)+'</div>'
+      +'<div class="conv-item-time">'+timeStr+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function saveCurrentMessage(role, name, text, time) {
+  if (!currentConvId || !conversations[currentConvId]) return;
+  var conv = conversations[currentConvId];
+  if (!conv.messages) conv.messages = [];
+  conv.messages.push({role, name, text, time});
+  // Update title from first user message
+  if (role === 'user' && conv.messages.filter(m=>m.role==='user').length === 1) {
+    conv.title = text.slice(0,30) + (text.length>30?'...':'');
+  }
+  conv.time = Date.now();
+  saveConversations();
+  renderConvList();
+}
+
 let currentAgent = 'apex';
 let chatHistory = [];
 let taskCount = 0;
@@ -844,6 +1018,18 @@ let actEnabled = true;
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('apex-img').src = SPRITES['apex'];
   document.getElementById('chat-hdr-sprite').src = SPRITES['apex'];
+  loadConversations();
+  // สร้าง conversation เริ่มต้นถ้ายังไม่มี
+  if (Object.keys(conversations).length === 0) {
+    newConversation();
+  } else {
+    // โหลด conversation ล่าสุด
+    var keys = Object.keys(conversations).sort((a,b) => conversations[b].time - conversations[a].time);
+    currentConvId = keys[0];
+    currentAgent = conversations[keys[0]].agent || 'apex';
+    chatHistory = conversations[keys[0]].history || [];
+  }
+  renderConvList();
   buildOfficeGrid();
   buildChatAgentList();
   updateModeDisplay();
@@ -927,6 +1113,10 @@ function buildChatAgentList() {
 function initChat(name) {
   currentAgent = name;
   chatHistory = [];
+  // ดึง history จาก conversation ปัจจุบัน
+  if (currentConvId && conversations[currentConvId] && conversations[currentConvId].agent === name) {
+    chatHistory = conversations[currentConvId].history || [];
+  }
   document.getElementById('chat-hdr-name').textContent = name.toUpperCase();
   document.getElementById('chat-hdr-name').style.color = COLORS[name];
   document.getElementById('chat-hdr-role').textContent = ROLES[name];
@@ -938,8 +1128,15 @@ function initChat(name) {
 }
 
 function switchChatAgent(name) {
+  // สร้าง conversation ใหม่สำหรับ agent นี้
+  var id = newConversation();
+  conversations[id].agent = name;
+  conversations[id].title = name.toUpperCase() + ' Chat';
+  currentConvId = id;
+  saveConversations();
   initChat(name);
   buildChatAgentList();
+  renderConvList();
   document.getElementById('chat-input').focus();
 }
 
@@ -961,6 +1158,10 @@ function sendChat() {
   btn.disabled = true;
   addMsg('user','YOU',msg,null);
   chatHistory.push({role:'user', content:'[As '+currentAgent.toUpperCase()+' - '+ROLES[currentAgent]+'] '+msg});
+  if (currentConvId && conversations[currentConvId]) {
+    conversations[currentConvId].history = chatHistory;
+    saveConversations();
+  }
 
   var tid = 'typ'+Date.now();
   var tel = document.createElement('div');
@@ -984,8 +1185,15 @@ function sendChat() {
     else if(data.error) reply='Error: '+data.error;
     else reply=JSON.stringify(data).slice(0,200);
     chatHistory.push({role:'assistant',content:reply});
+    if (currentConvId && conversations[currentConvId]) {
+      conversations[currentConvId].history = chatHistory;
+      saveConversations();
+    }
     addMsg('agent',currentAgent.toUpperCase(),reply,currentAgent);
     addActivity(currentAgent.toUpperCase(),msg.slice(0,28)+(msg.length>28?'...':''));
+    taskCount++;
+    var tn=document.getElementById('task-n'); if(tn) tn.textContent=taskCount;
+    var at=document.getElementById('apex-tasks'); if(at) at.textContent=taskCount;
     btn.disabled=false;
   }).catch(function(e){
     var el=document.getElementById(tid); if(el) el.remove();
@@ -1004,7 +1212,7 @@ function addMsg(type, name, text, agentName) {
     : '<div class="msg-avatar"><img src="'+SPRITES[agentName]+'" width="28" height="28" style="image-rendering:pixelated"></div>';
   var color=type==='user'?'var(--teal)':COLORS[agentName]||'var(--dim)';
   el.innerHTML=av+'<div><div class="msg-name" style="color:'+color+'">'+name+'</div>'
-    +'<div class="msg-bubble">'+text.replace(/\n/g,'<br>')+'</div>'
+    +'<div class="msg-bubble">'+safeText(text)+'</div>'
     +'<div class="msg-time">'+now+'</div></div>';
   msgs.appendChild(el);
   scrollChat();
@@ -1130,14 +1338,10 @@ var acts=[
 function addActivity(agent,msg) {
   var feed=document.getElementById('feed');
   var el=document.createElement('div'); el.className='act-item new';
-  el.innerHTML='<b>'+agent+'</b> - '+msg;
+  el.innerHTML='<b>'+agent+'</b> &mdash; '+msg;
   feed.insertBefore(el,feed.firstChild);
   setTimeout(function(){el.classList.remove('new');},400);
   if(feed.children.length>8) feed.removeChild(feed.lastChild);
-  taskCount++;
-  document.getElementById('task-n').textContent=taskCount;
-  document.getElementById('apex-tasks').textContent=taskCount;
-  // notif badge ไม่เพิ่มเองอัตโนมัติ
 }
 function startActivity() {
   if(actTimer) clearInterval(actTimer);
