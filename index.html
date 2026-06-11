@@ -35,6 +35,15 @@ html,body{height:100%;background:var(--navy);color:var(--text);font-family:var(-
 .tib-val{font-family:var(--px);font-size:8px;color:var(--blue)}
 .tib-sub{font-family:var(--px);font-size:5px;color:var(--dim)}
 .topbar-bell{padding:0 14px;border-left:1px solid var(--b2);height:100%;display:flex;align-items:center;cursor:pointer;position:relative}
+.notif-panel{display:none;position:absolute;top:48px;right:0;width:260px;max-height:360px;overflow-y:auto;background:var(--navy2);border:2px solid var(--b2);border-radius:4px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);text-align:left}
+.notif-panel.open{display:block}
+.notif-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--b1);font-family:var(--px);font-size:6px;color:var(--teal)}
+.notif-clear{color:var(--dim);cursor:pointer;font-size:5px}
+.notif-clear:hover{color:var(--red)}
+.notif-entry{padding:8px 12px;border-bottom:1px solid var(--b1);font-size:11px;color:var(--dim);line-height:1.4}
+.notif-entry b{color:var(--teal);font-family:var(--px);font-size:6px}
+.notif-entry .nt-time{font-family:var(--px);font-size:5px;color:var(--dim);margin-top:3px}
+.notif-empty{padding:20px;text-align:center;font-size:11px;color:var(--dim)}
 .notif-badge{position:absolute;top:10px;right:8px;background:var(--red);color:#fff;font-family:var(--px);font-size:5px;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px}
 .topbar-user{padding:0 14px;border-left:1px solid var(--b2);height:100%;display:flex;align-items:center;gap:8px;cursor:pointer}
 .user-avatar{width:32px;height:32px;border-radius:3px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-family:var(--px);font-size:11px;color:#fff}
@@ -161,7 +170,17 @@ html,body{height:100%;background:var(--navy);color:var(--text);font-family:var(-
 .typing-dot:nth-child(2){animation-delay:.15s}
 .typing-dot:nth-child(3){animation-delay:.3s}
 @keyframes tdot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.chat-input-area{padding:10px;border-top:1px solid var(--b1);display:flex;gap:8px;flex-shrink:0}
+.chat-input-area{padding:10px;border-top:1px solid var(--b1);display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.chat-upload-btn{font-family:var(--px);font-size:11px;padding:0 12px;background:var(--navy3);color:var(--teal);border:1px solid var(--b2);border-radius:3px;cursor:pointer;height:38px;display:flex;align-items:center}
+.chat-upload-btn:hover{border-color:var(--teal);background:rgba(0,229,180,.08)}
+.file-chips{display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-bottom:4px}
+.file-chip{display:flex;align-items:center;gap:6px;background:var(--navy3);border:1px solid var(--teal);border-radius:3px;padding:4px 8px;font-size:11px;color:var(--text)}
+.file-chip .fc-icon{font-size:13px}
+.file-chip .fc-name{max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-chip .fc-size{color:var(--dim);font-size:10px}
+.file-chip .fc-remove{cursor:pointer;color:var(--dim);font-family:var(--px);font-size:8px}
+.file-chip .fc-remove:hover{color:var(--red)}
+.file-loading{font-size:11px;color:var(--amber)}
 .chat-input{flex:1;background:var(--navy3);border:1px solid var(--b2);border-radius:3px;padding:8px 12px;color:var(--text);font-family:var(--vt);font-size:14px;outline:none;transition:.15s}
 .chat-input:focus{border-color:var(--teal)}
 .chat-send-btn{font-family:var(--px);font-size:7px;padding:0 14px;background:var(--teal);color:var(--navy);border:none;border-radius:3px;cursor:pointer;height:38px}
@@ -531,6 +550,9 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
 }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 <div class="topbar">
@@ -549,9 +571,16 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
       <div class="tib-val" id="clock-val">--:--:--</div>
       <div class="tib-sub" id="clock-date"></div>
     </div>
-    <div class="topbar-bell" onclick="document.getElementById('notif-n').textContent='0'">
+    <div class="topbar-bell" onclick="toggleNotif()" style="position:relative">
       <span style="font-size:20px">&#128276;</span>
       <span class="notif-badge" id="notif-n">3</span>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-head">
+          <span>NOTIFICATIONS</span>
+          <span class="notif-clear" onclick="clearNotif(event)">CLEAR ALL</span>
+        </div>
+        <div id="notif-list"></div>
+      </div>
     </div>
     <div class="topbar-user">
       <div class="user-avatar">Y</div>
@@ -653,6 +682,7 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
               <div class="chat-agent-role" id="chat-hdr-role">CEO &middot; Coordinator</div>
             </div>
             <div class="chat-mode-selector">
+              <button class="mode-btn" onclick="setChatMode('orchestrate',this)" style="border-color:var(--pink);color:var(--pink)">&#128081; APEX</button>
               <button class="mode-btn active" onclick="setChatMode('anthropic',this)">ANTHROPIC</button>
               <button class="mode-btn" onclick="setChatMode('ollama',this)">OLLAMA</button>
               <button class="mode-btn" onclick="setChatMode('teacher-student',this)">TEACHER</button>
@@ -661,7 +691,13 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
           </div>
           <div class="chat-messages" id="chat-messages"></div>
           <div class="chat-input-area">
-            <input class="chat-input" id="chat-input" placeholder="พิมพ์คำถามหรือ task... (Enter = ส่ง)">
+            <div class="file-chips" id="file-chips"></div>
+            <input type="file" id="file-input" accept=".pdf,.xlsx,.xls,.csv,.docx,.txt" multiple style="display:none" onchange="handleFileUpload(event)">
+            <button class="chat-upload-btn" onclick="document.getElementById('file-input').click()" title="แนบไฟล์ PDF/Excel/Word/CSV">&#128206;</button>
+            <div style="flex:1;position:relative;display:flex">
+              <input class="chat-input" id="chat-input" placeholder="พิมพ์คำถามหรือ task... (Enter = ส่ง)" style="width:100%;padding-right:32px">
+              <span id="input-clear" onclick="clearInput()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--dim);font-family:var(--px);font-size:10px;display:none">&#10005;</span>
+            </div>
             <button class="chat-send-btn" id="send-btn" onclick="sendChat()">SEND &#9658;</button>
           </div>
         </div>
@@ -764,10 +800,11 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
           <div class="sc-title">AI MODE</div>
           <div class="sc-row"><span class="sc-label">Current mode</span><span class="sc-val" id="mode-display">ANTHROPIC</span></div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-            <button class="sc-btn primary" onclick="setMode('anthropic')">ANTHROPIC</button>
-            <button class="sc-btn" onclick="setMode('ollama')">OLLAMA</button>
-            <button class="sc-btn" onclick="setMode('teacher-student')">TEACHER-STUDENT</button>
-            <button class="sc-btn" onclick="setMode('parallel')">PARALLEL</button>
+            <button class="sc-btn mode-sc-btn" data-mode="orchestrate" onclick="setMode('orchestrate')" style="border-color:#ec4899;color:#ec4899">&#128081; APEX ORCHESTRATE</button>
+            <button class="sc-btn mode-sc-btn" data-mode="anthropic" onclick="setMode('anthropic')">ANTHROPIC</button>
+            <button class="sc-btn mode-sc-btn" data-mode="ollama" onclick="setMode('ollama')">OLLAMA</button>
+            <button class="sc-btn mode-sc-btn" data-mode="teacher-student" onclick="setMode('teacher-student')">TEACHER-STUDENT</button>
+            <button class="sc-btn mode-sc-btn" data-mode="parallel" onclick="setMode('parallel')">PARALLEL</button>
           </div>
         </div>
         <div class="setting-card">
@@ -864,6 +901,237 @@ function escapeHtml(text) {
 function safeText(text) {
   return escapeHtml(text).replace(/\n/g, '<br>');
 }
+
+// ════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════
+var notifications = [
+  {agent:'APEX', msg:'ยินดีต้อนรับสู่ Top Company', time:'just now'},
+  {agent:'TERRA', msg:'Borehole DH-1 analysis ready', time:'5m ago'},
+  {agent:'SIGMA', msg:'Portfolio update: VT +0.3%', time:'12m ago'},
+];
+
+function toggleNotif() {
+  var panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  var isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+  } else {
+    renderNotif();
+    panel.classList.add('open');
+    // เคลียร์ badge เมื่อเปิดดู
+    var nb = document.getElementById('notif-n');
+    if (nb) { nb.textContent='0'; nb.style.display='none'; }
+  }
+}
+
+function renderNotif() {
+  var list = document.getElementById('notif-list');
+  if (!list) return;
+  if (notifications.length === 0) {
+    list.innerHTML = '<div class="notif-empty">No notifications</div>';
+    return;
+  }
+  list.innerHTML = notifications.map(function(n){
+    return '<div class="notif-entry"><b>'+escapeHtml(n.agent)+'</b><div>'+escapeHtml(n.msg)+'</div><div class="nt-time">'+escapeHtml(n.time)+'</div></div>';
+  }).join('');
+}
+
+function clearNotif(e) {
+  if (e) e.stopPropagation();
+  notifications = [];
+  renderNotif();
+  var nb = document.getElementById('notif-n');
+  if (nb) { nb.textContent='0'; nb.style.display='none'; }
+}
+
+function addNotif(agent, msg) {
+  notifications.unshift({agent:agent, msg:msg, time:'just now'});
+  if (notifications.length > 20) notifications.pop();
+  var nb = document.getElementById('notif-n');
+  if (nb) {
+    nb.style.display='flex';
+    nb.textContent = String(parseInt(nb.textContent||'0')+1);
+  }
+}
+
+// ปิด panel เมื่อคลิกที่อื่น
+document.addEventListener('click', function(e) {
+  var bell = e.target.closest('.topbar-bell');
+  var panel = document.getElementById('notif-panel');
+  if (!bell && panel && panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  }
+});
+
+
+// ── Clear chat input ──
+function clearInput() {
+  var inp = document.getElementById('chat-input');
+  if (inp) { inp.value = ''; inp.focus(); }
+  var clr = document.getElementById('input-clear');
+  if (clr) clr.style.display = 'none';
+}
+// แสดงปุ่ม ✕ เมื่อมีข้อความ
+document.addEventListener('DOMContentLoaded', function() {
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.addEventListener('input', function() {
+      var clr = document.getElementById('input-clear');
+      if (clr) clr.style.display = inp.value.length > 0 ? 'block' : 'none';
+    });
+  }
+});
+
+
+// ════════════════════════════════════════
+// FILE UPLOAD & READING
+// ════════════════════════════════════════
+var attachedFiles = [];  // { name, type, size, content }
+
+// ตั้งค่า pdf.js worker
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+function fmtSize(bytes) {
+  if (bytes < 1024) return bytes + 'B';
+  if (bytes < 1048576) return Math.round(bytes/1024) + 'KB';
+  return (bytes/1048576).toFixed(1) + 'MB';
+}
+
+function fileIcon(name) {
+  var ext = name.split('.').pop().toLowerCase();
+  if (ext === 'pdf') return '\uD83D\uDCC4';
+  if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') return '\uD83D\uDCCA';
+  if (ext === 'docx' || ext === 'doc') return '\uD83D\uDCDD';
+  return '\uD83D\uDCCe';
+}
+
+async function handleFileUpload(event) {
+  var files = Array.from(event.target.files);
+  event.target.value = '';  // reset เพื่อ upload ไฟล์เดิมซ้ำได้
+
+  for (var file of files) {
+    if (file.size > 10 * 1048576) {
+      alert('ไฟล์ ' + file.name + ' ใหญ่เกิน 10MB');
+      continue;
+    }
+    var chipId = 'chip-' + Date.now() + Math.random().toString(36).slice(2,6);
+    addFileChip(chipId, file.name, file.size, true);
+
+    try {
+      var content = await readFileContent(file);
+      attachedFiles.push({
+        name: file.name,
+        type: file.name.split('.').pop().toLowerCase(),
+        size: file.size,
+        content: content,
+        chipId: chipId
+      });
+      updateFileChip(chipId, file.name, file.size, false);
+    } catch (err) {
+      updateFileChip(chipId, file.name + ' (อ่านไม่ได้)', file.size, false, true);
+      console.error('File read error:', err);
+    }
+  }
+}
+
+async function readFileContent(file) {
+  var ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'pdf') {
+    return await readPdf(file);
+  } else if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') {
+    return await readSpreadsheet(file);
+  } else if (ext === 'docx') {
+    return await readDocx(file);
+  } else if (ext === 'txt') {
+    return await file.text();
+  }
+  return '[ไม่รองรับไฟล์ประเภทนี้]';
+}
+
+async function readPdf(file) {
+  var buf = await file.arrayBuffer();
+  var pdf = await pdfjsLib.getDocument({data: buf}).promise;
+  var text = '';
+  for (var i = 1; i <= pdf.numPages; i++) {
+    var page = await pdf.getPage(i);
+    var content = await page.getTextContent();
+    text += content.items.map(function(it){ return it.str; }).join(' ') + '\n\n';
+  }
+  return text.trim();
+}
+
+async function readSpreadsheet(file) {
+  var buf = await file.arrayBuffer();
+  var wb = XLSX.read(buf, {type:'array'});
+  var out = '';
+  wb.SheetNames.forEach(function(name) {
+    var sheet = wb.Sheets[name];
+    var csv = XLSX.utils.sheet_to_csv(sheet);
+    out += '=== Sheet: ' + name + ' ===\n' + csv + '\n\n';
+  });
+  return out.trim();
+}
+
+async function readDocx(file) {
+  var buf = await file.arrayBuffer();
+  var result = await mammoth.extractRawText({arrayBuffer: buf});
+  return result.value.trim();
+}
+
+function addFileChip(id, name, size, loading) {
+  var chips = document.getElementById('file-chips');
+  var el = document.createElement('div');
+  el.className = 'file-chip';
+  el.id = id;
+  el.innerHTML = '<span class="fc-icon">' + fileIcon(name) + '</span>'
+    + '<span class="fc-name">' + escapeHtml(name) + '</span>'
+    + (loading ? '<span class="file-loading">อ่าน...</span>'
+               : '<span class="fc-size">' + fmtSize(size) + '</span>'
+                 + '<span class="fc-remove" onclick="removeFile(\'' + id + '\')">\u2715</span>');
+  chips.appendChild(el);
+}
+
+function updateFileChip(id, name, size, loading, error) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '<span class="fc-icon">' + fileIcon(name) + '</span>'
+    + '<span class="fc-name">' + escapeHtml(name) + '</span>'
+    + (error ? '<span style="color:var(--red);font-size:10px">ERR</span>'
+             : '<span class="fc-size">' + fmtSize(size) + '</span>')
+    + '<span class="fc-remove" onclick="removeFile(\'' + id + '\')">\u2715</span>';
+}
+
+function removeFile(id) {
+  attachedFiles = attachedFiles.filter(function(f){ return f.chipId !== id; });
+  var el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function clearAttachedFiles() {
+  attachedFiles = [];
+  var chips = document.getElementById('file-chips');
+  if (chips) chips.innerHTML = '';
+}
+
+function buildFileContext() {
+  if (attachedFiles.length === 0) return '';
+  var ctx = '\n\n[ไฟล์แนบ ' + attachedFiles.length + ' ไฟล์]\n';
+  attachedFiles.forEach(function(f, i) {
+    var content = f.content;
+    // จำกัดความยาวต่อไฟล์ 8000 ตัวอักษร (กัน token เกิน)
+    if (content.length > 8000) {
+      content = content.slice(0, 8000) + '\n...[ตัดทอน ' + (content.length-8000) + ' ตัวอักษร]';
+    }
+    ctx += '\n--- ไฟล์ ' + (i+1) + ': ' + f.name + ' ---\n' + content + '\n';
+  });
+  return ctx;
+}
+
 
 const ORDER=['apex','terra','kore','strata','wave','quanta','pulse','lex','forma','regs','sigma','delta','flux','alpha'];
 let currentMode = localStorage.getItem('ttm_ai_mode')||'anthropic';
@@ -1144,7 +1412,11 @@ function setChatMode(mode, btn) {
   currentMode = mode;
   localStorage.setItem('ttm_ai_mode', mode);
   document.querySelectorAll('.mode-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
+  // sync ปุ่ม settings
+  document.querySelectorAll('.mode-sc-btn').forEach(function(b){
+    b.classList.toggle('primary', b.getAttribute('data-mode')===mode);
+  });
   updateModeDisplay();
 }
 
@@ -1152,12 +1424,21 @@ function sendChat() {
   var input = document.getElementById('chat-input');
   if (!input) return;
   var msg = input.value.trim();
-  if (!msg) return;
+  if (!msg && attachedFiles.length === 0) return;
   input.value = '';
   var btn = document.getElementById('send-btn');
   btn.disabled = true;
-  addMsg('user','YOU',msg,null);
-  chatHistory.push({role:'user', content:'[As '+currentAgent.toUpperCase()+' - '+ROLES[currentAgent]+'] '+msg});
+  // แสดงใน UI: msg + รายชื่อไฟล์
+  var displayMsg = msg;
+  if (attachedFiles.length > 0) {
+    displayMsg += (msg ? '\n\n' : '') + '\uD83D\uDCCe ' + attachedFiles.map(function(f){return f.name;}).join(', ');
+  }
+  addMsg('user','YOU',displayMsg,null);
+  // ส่งให้ AI: msg + เนื้อหาไฟล์เต็ม
+  var fileContext = buildFileContext();
+  var fullMsg = msg + fileContext;
+  chatHistory.push({role:'user', content:'[As '+currentAgent.toUpperCase()+' - '+ROLES[currentAgent]+'] '+fullMsg});
+  clearAttachedFiles();
   if (currentConvId && conversations[currentConvId]) {
     conversations[currentConvId].history = chatHistory;
     saveConversations();
@@ -1180,7 +1461,19 @@ function sendChat() {
   }).then(function(r){ return r.json(); }).then(function(data) {
     var el=document.getElementById(tid); if(el) el.remove();
     var reply='';
-    if(data.content) reply=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
+    if(data.mode==='orchestrate' && data.synthesis){
+      // APEX orchestration — แสดงว่าเลือก agent ไหน + คำตอบรวม
+      var agentTags = (data.selectedAgents||[]).map(function(a){return a.toUpperCase();}).join(', ');
+      reply = '\uD83D\uDC51 APEX มอบหมายงานให้: '+agentTags+'\n';
+      if(data.selectionReason) reply += '\uD83D\uDCA1 '+data.selectionReason+'\n';
+      reply += '\n';
+      // แสดงคำตอบแต่ละ agent (ย่อ)
+      (data.agentResponses||[]).forEach(function(r){
+        reply += '\u2500\u2500\u2500 '+r.agent.toUpperCase()+' ('+r.role+') \u2500\u2500\u2500\n'+r.content+'\n\n';
+      });
+      reply += '\u2550\u2550\u2550 \uD83D\uDCCB APEX สรุป \u2550\u2550\u2550\n'+data.synthesis;
+    }
+    else if(data.content) reply=data.content.map(function(c){return c.type==='text'?c.text:'';}).join('');
     else if(data.response) reply=data.response;
     else if(data.error) reply='Error: '+data.error;
     else reply=JSON.stringify(data).slice(0,200);
@@ -1191,6 +1484,7 @@ function sendChat() {
     }
     addMsg('agent',currentAgent.toUpperCase(),reply,currentAgent);
     addActivity(currentAgent.toUpperCase(),msg.slice(0,28)+(msg.length>28?'...':''));
+    addNotif(currentAgent.toUpperCase(), 'ตอบกลับเสร็จแล้ว');
     taskCount++;
     var tn=document.getElementById('task-n'); if(tn) tn.textContent=taskCount;
     var at=document.getElementById('apex-tasks'); if(at) at.textContent=taskCount;
@@ -1249,21 +1543,43 @@ function buildCharts() {
 function loadSettings() {
   var mode=localStorage.getItem('ttm_ai_mode')||'anthropic';
   var modeEl=document.getElementById('mode-display'); if(modeEl) modeEl.textContent=mode.toUpperCase();
+  // sync ปุ่ม active ตาม mode
+  document.querySelectorAll('.mode-sc-btn').forEach(function(b){
+    b.classList.toggle('primary', b.getAttribute('data-mode')===mode);
+  });
   var urlEl=document.getElementById('ollama-url-input'); if(urlEl) urlEl.value=localStorage.getItem('ttm_ollama_url')||'';
   var modelEl=document.getElementById('ollama-model-input'); if(modelEl) modelEl.value=localStorage.getItem('ttm_ollama_model')||'llama3.1:8b';
 }
 function setMode(m) {
   currentMode=m; localStorage.setItem('ttm_ai_mode',m); updateModeDisplay();
+  // อัปเดตปุ่ม settings ให้ active ตาม mode
+  document.querySelectorAll('.mode-sc-btn').forEach(function(b){
+    b.classList.toggle('primary', b.getAttribute('data-mode')===m);
+  });
+  // อัปเดตปุ่ม mode ใน chat header ด้วย
+  document.querySelectorAll('.mode-btn').forEach(function(b){
+    var bm = b.getAttribute('onclick')||'';
+    b.classList.toggle('active', bm.indexOf("'"+m+"'")>-1);
+  });
 }
 function updateModeDisplay() {
-  var labels={anthropic:'ANTHROPIC',ollama:'OLLAMA','teacher-student':'TEACHER','parallel':'PARALLEL'};
+  var labels={orchestrate:'APEX',anthropic:'ANTHROPIC',ollama:'OLLAMA','teacher-student':'TEACHER','parallel':'PARALLEL'};
   var label=labels[currentMode]||currentMode.toUpperCase();
   var pill=document.getElementById('mode-pill'); if(pill) pill.textContent=label;
   var badge=document.getElementById('apex-mode-badge'); if(badge) badge.textContent=label;
   var disp=document.getElementById('mode-display'); if(disp) disp.textContent=label;
+  // sync ปุ่ม settings active
+  document.querySelectorAll('.mode-sc-btn').forEach(function(b){
+    b.classList.toggle('primary', b.getAttribute('data-mode')===currentMode);
+  });
+  // sync ปุ่ม chat header active
+  document.querySelectorAll('.mode-btn').forEach(function(b){
+    var oc = b.getAttribute('onclick')||'';
+    b.classList.toggle('active', oc.indexOf("'"+currentMode+"'")>-1);
+  });
 }
 function cycleMode() {
-  var modes=['anthropic','ollama','teacher-student','parallel'];
+  var modes=['orchestrate','anthropic','ollama','teacher-student','parallel'];
   setMode(modes[(modes.indexOf(currentMode)+1)%modes.length]);
 }
 function saveOllamaUrl() {
@@ -1489,6 +1805,8 @@ function updatePlatformInfo() {
 
 // Prevent double-tap zoom on buttons
 document.addEventListener('touchend', function(e) {
+  // ไม่แตะ input/textarea เพื่อให้พิมพ์/ลบได้ปกติ
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.target.tagName === 'BUTTON' || e.target.classList.contains('nav-item') ||
       e.target.classList.contains('agent-card') || e.target.classList.contains('sc-btn')) {
     e.preventDefault();
