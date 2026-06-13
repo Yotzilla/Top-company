@@ -132,13 +132,13 @@ html,body{height:100%;background:var(--navy);color:var(--text);font-family:var(-
 .conv-header{font-family:var(--px);font-size:6px;color:var(--teal);padding:8px 10px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .conv-new-btn{font-family:var(--px);font-size:5px;padding:3px 6px;border:1px solid var(--teal);border-radius:2px;background:transparent;color:var(--teal);cursor:pointer}
 .conv-new-btn:hover{background:rgba(0,229,180,.1)}
-.conv-item{padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--b1);transition:.1s;font-size:10px}
+.conv-item{padding:8px 30px 8px 10px;cursor:pointer;border-bottom:1px solid var(--b1);transition:.1s;font-size:10px;position:relative}
 .conv-item:hover{background:var(--navy3)}
 .conv-item.active{background:rgba(0,229,180,.08);border-left:3px solid var(--teal)}
 .conv-item-name{font-family:var(--px);font-size:6px;margin-bottom:3px}
 .conv-item-preview{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
 .conv-item-time{font-family:var(--px);font-size:5px;color:var(--dim);margin-top:2px}
-.conv-item-del{float:right;color:var(--dim);cursor:pointer;font-size:13px;opacity:.5;padding:2px 6px;margin:-2px -4px 0 0;border-radius:3px}
+.conv-item-del{position:absolute;top:8px;right:6px;color:var(--dim);cursor:pointer;font-size:15px;opacity:.6;padding:4px 8px;border-radius:3px;z-index:5;line-height:1}
 .conv-item:hover .conv-item-del:hover{color:var(--red);opacity:1;background:rgba(239,68,68,.12)}
 .cal-header{font-family:var(--px);font-size:6px;color:var(--teal);padding:8px 10px;border-bottom:1px solid var(--b1)}
 .cal-item{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:pointer;font-size:11px;border-bottom:1px solid var(--b1);transition:.1s}
@@ -1295,13 +1295,28 @@ function renderConvList() {
       ? c.messages[c.messages.length-1].text.slice(0,40)
       : 'New conversation';
     var timeStr = new Date(c.time).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
-    return '<div class="conv-item'+(isActive?' active':'')+'" onclick="loadConversation(\'+id+\')">'
-      +'<span class="conv-item-del" onclick="event.stopPropagation();deleteConversation(\'+id+\',event);return false;">&#10005;</span>'
+    return '<div class="conv-item'+(isActive?' active':'')+'" data-cid="'+id+'">'
+      +'<span class="conv-item-del" data-del="'+id+'">&#10005;</span>'
       +'<div class="conv-item-name" style="color:'+COLORS[c.agent]+'">'+c.agent.toUpperCase()+'</div>'
       +'<div class="conv-item-preview">'+escapeHtml(preview)+'</div>'
       +'<div class="conv-item-time">'+timeStr+'</div>'
       +'</div>';
   }).join('');
+  // ผูก event แบบ delegation (ชัวร์กว่า inline onclick)
+  list.querySelectorAll('.conv-item-del').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      e.preventDefault();
+      deleteConversation(btn.getAttribute('data-del'), e);
+    });
+  });
+  list.querySelectorAll('.conv-item').forEach(function(item){
+    item.addEventListener('click', function(e){
+      // ไม่ทำงานถ้าคลิกที่ปุ่มลบ
+      if (e.target.classList.contains('conv-item-del')) return;
+      loadConversation(item.getAttribute('data-cid'));
+    });
+  });
 }
 
 function saveCurrentMessage(role, name, text, time) {
