@@ -1590,10 +1590,11 @@ function scrollChat(){ var m=document.getElementById('chat-messages'); if(m) m.s
 function openAgentChat(name) {
   showPage('chat', document.getElementById('nav-chat'));
   setTimeout(function(){ switchChatAgent(name); }, 50);
-  document.getElementById('sel-panel').classList.add('show');
-  document.getElementById('sel-name').textContent=name.toUpperCase();
-  document.getElementById('sel-role').textContent=ROLES[name];
-  document.getElementById('sel-thumb').src=SPRITES[name];
+  // sel-panel ถูกลบไปแล้ว (เปลี่ยนเป็น Task Queue) — เช็คก่อนใช้
+  var sp=document.getElementById('sel-panel'); if(sp) sp.classList.add('show');
+  var sn=document.getElementById('sel-name'); if(sn) sn.textContent=name.toUpperCase();
+  var sr=document.getElementById('sel-role'); if(sr) sr.textContent=ROLES[name];
+  var st=document.getElementById('sel-thumb'); if(st) st.src=SPRITES[name];
 }
 
 // REPORTS
@@ -1727,6 +1728,7 @@ var acts=[
 ];
 function addActivity(agent,msg) {
   var feed=document.getElementById('feed');
+  if(!feed) return;  // feed ถูกแทนด้วย Task Queue แล้ว
   var el=document.createElement('div'); el.className='act-item new';
   el.innerHTML='<b>'+agent+'</b> &mdash; '+msg;
   feed.insertBefore(el,feed.firstChild);
