@@ -589,6 +589,11 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
       <div class="tib-val" id="clock-val">--:--:--</div>
       <div class="tib-sub" id="clock-date"></div>
     </div>
+    <div class="tib" onclick="showPage('settings',document.getElementById('nav-settings'))" style="cursor:pointer" title="API Credits - คลิกดูรายละเอียด">
+      <div class="tib-label">API COST</div>
+      <div class="tib-val" id="cr-mini" style="color:var(--amber)">$0.00</div>
+      <div class="tib-sub">tap to view</div>
+    </div>
     <div class="topbar-bell" onclick="toggleNotif()" style="position:relative">
       <span style="font-size:20px">&#128276;</span>
       <span class="notif-badge" id="notif-n" style="display:none">0</span>
@@ -810,6 +815,18 @@ html { font-size: clamp(12px, 1.5vw, 16px); }
     <div class="page" id="page-settings">
       <div class="page-title">&#9881; SYSTEM SETTINGS</div>
       <div class="settings-grid">
+        <div class="setting-card" style="border-color:var(--teal)">
+          <div class="sc-title" style="color:var(--teal)">&#128179; API CREDITS (Anthropic)</div>
+          <div class="sc-row"><span class="sc-label">Token ทั้งหมดที่ใช้</span><span class="sc-val" id="cr-total" style="color:var(--teal)">0</span></div>
+          <div class="sc-row"><span class="sc-label" style="font-size:10px">Input tokens</span><span class="sc-val" id="cr-input" style="font-size:11px;color:var(--dim)">0</span></div>
+          <div class="sc-row"><span class="sc-label" style="font-size:10px">Output tokens</span><span class="sc-val" id="cr-output" style="font-size:11px;color:var(--dim)">0</span></div>
+          <div class="sc-row"><span class="sc-label">ค่าใช้จ่ายประมาณ</span><span class="sc-val" id="cr-cost" style="color:var(--amber)">$0.000</span></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="sc-btn" onclick="openBilling()" style="border-color:var(--teal);color:var(--teal)">&#128279; เช็คยอด + เติมเงิน</button>
+            <button class="sc-btn" onclick="resetTokenUsage()" style="border-color:var(--dim);color:var(--dim)">&#8634; RESET</button>
+          </div>
+          <div class="sc-row" style="margin-top:8px"><span class="sc-label" style="font-size:9px;color:var(--dim)">*ประมาณการจากราคา Sonnet ($3/$15 ต่อ 1M) ยอดจริงดูที่ console</span></div>
+        </div>
         <div class="setting-card" style="border-color:var(--amber)">
           <div class="sc-title" style="color:var(--amber)">&#129504; TRAINING DATASET</div>
           <div class="sc-row"><span class="sc-label">ข้อมูลที่เก็บได้</span><span class="sc-val" id="dataset-count" style="color:var(--amber)">0</span></div>
@@ -892,6 +909,59 @@ function escapeHtml(text) {
 function safeText(text) {
   return escapeHtml(text).replace(/\n/g, '<br>');
 }
+
+// ════════════════════════════════════════
+// API CREDITS TRACKER (Anthropic)
+// ════════════════════════════════════════
+var tokenUsage = { input: 0, output: 0 };
+
+// ราคา Claude Sonnet (USD per 1M tokens) - ปรับตามจริง
+var PRICE_INPUT = 3.0;   // $3 / 1M input tokens
+var PRICE_OUTPUT = 15.0; // $15 / 1M output tokens
+
+function loadTokenUsage() {
+  try {
+    var raw = localStorage.getItem('tc_token_usage');
+    if (raw) tokenUsage = JSON.parse(raw);
+  } catch(e) { tokenUsage = {input:0, output:0}; }
+  updateCreditsDisplay();
+}
+
+function addTokenUsage(inputTokens, outputTokens) {
+  tokenUsage.input += (inputTokens || 0);
+  tokenUsage.output += (outputTokens || 0);
+  try { localStorage.setItem('tc_token_usage', JSON.stringify(tokenUsage)); } catch(e){}
+  updateCreditsDisplay();
+}
+
+function estimatedCost() {
+  return (tokenUsage.input / 1000000 * PRICE_INPUT) +
+         (tokenUsage.output / 1000000 * PRICE_OUTPUT);
+}
+
+function updateCreditsDisplay() {
+  var total = tokenUsage.input + tokenUsage.output;
+  var cost = estimatedCost();
+  var el;
+  el = document.getElementById('cr-total'); if(el) el.textContent = total.toLocaleString();
+  el = document.getElementById('cr-input'); if(el) el.textContent = tokenUsage.input.toLocaleString();
+  el = document.getElementById('cr-output'); if(el) el.textContent = tokenUsage.output.toLocaleString();
+  el = document.getElementById('cr-cost'); if(el) el.textContent = '$' + cost.toFixed(3);
+  // topbar mini
+  el = document.getElementById('cr-mini'); if(el) el.textContent = '$' + cost.toFixed(2);
+}
+
+function resetTokenUsage() {
+  if (!confirm('รีเซ็ตตัวนับ token? (เริ่มนับใหม่จาก 0)')) return;
+  tokenUsage = { input: 0, output: 0 };
+  localStorage.removeItem('tc_token_usage');
+  updateCreditsDisplay();
+}
+
+function openBilling() {
+  window.open('https://console.anthropic.com/settings/billing', '_blank');
+}
+
 
 // ════════════════════════════════════════
 // TRAINING DATASET COLLECTION (จาก TEACHER mode)
@@ -1422,6 +1492,7 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('chat-hdr-sprite').src = SPRITES['apex'];
   loadConversations();
   loadTrainingData();
+  loadTokenUsage();
   buildOfficeGrid();
   buildChatAgentList();
   updateModeDisplay();
@@ -1628,6 +1699,10 @@ function sendChat() {
     // ── เก็บ DATASET จาก TEACHER mode (สำหรับเทรน Ollama ภายหลัง) ──
     if(currentMode==='teacher-student' && data.teacher && data.teacher.length>20){
       saveTrainingPair(msg, data.student||'', data.teacher);
+    }
+    // ── นับ token usage (Anthropic) ──
+    if(data.usage){
+      addTokenUsage(data.usage.input_tokens, data.usage.output_tokens);
     }
     chatHistory.push({role:'assistant',content:reply});
     if (currentConvId && conversations[currentConvId]) {
